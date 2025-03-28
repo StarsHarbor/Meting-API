@@ -72,7 +72,7 @@ export const request = async (method, url, data = {}, options) => {
             ...options.cookie,
             __remember_me: true,
             // NMTID: nanoid(),
-            _ntes_nuid: nanoid(),
+            _ntes_nuid: '00OZkCt3yj33OEER0Gkqcgd6iomebIAAAGSSW9ncw',
         }
         if (!options.cookie.MUSIC_U) {
             // 游客
