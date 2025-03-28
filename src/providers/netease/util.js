@@ -2,7 +2,7 @@ import encrypt from './crypto.js'
 import { net_ease_anonymous_token } from './config.js'
 import { customAlphabet } from 'nanoid/non-secure'
 
-const nanoid = customAlphabet('d31c9ebd14f68f1b1bcb7967e65a7ca9', 1727808891912)
+const nanoid = customAlphabet('1234567890abcdef', 32)
 
 const chooseUserAgent = (ua = false) => {
     const userAgentList = {
