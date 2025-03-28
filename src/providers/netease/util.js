@@ -4,6 +4,19 @@ import { customAlphabet } from 'nanoid/non-secure'
 
 const nanoid = customAlphabet('1234567890abcdef', 32)
 
+// cookie字符串
+const customCookieString = `
+_ga=GA1.1.165292043.1722699656; Qs_lvt_382223=1722699656; Qs_pv_382223=3802126372608427000; _clck=1lq5jdo%7C2%7Cfo0%7C0%7C1676; _ga_C6TGHFPQ1H=GS1.1.1722699656.1.1.1722699729.0.0.0; NMTID=00OZkCt3yj33OEER0Gkqcgd6iomebIAAAGSSW9ncw; __remember_me=true; _ntes_nnid=d31c9ebd14f68f1b1bcb7967e65a7ca9,1727808891912; _ntes_nuid=d31c9ebd14f68f1b1bcb7967e65a7ca9; WM_TID=erCXQ8%2BjutlAUFRBBVfXXCTXeaprFLUf; P_INFO=15231448886|1727969428|1|huajia|00&99|heb&1727969380&huajia#heb&130400#10#0#0|&0|null|15231448886; _iuqxldmzr_=32; WEVNSM=1.0.0; WNMCID=jhwwed.1729434772729.01.0; sDeviceId=YD-S4AAVdYlI8ZAUlRUFVKSDJjMIpTUzm1K; __snaker__id=unkWY3xo6aOtHlgy; ntes_kaola_ad=1; __csrf=c26f69d184742e945e331f9b8f4838f2; WM_NI=66Q6tppbEJKSKErAPWTWAUZbJWQMvVx4HC8824OeFUIlDIJiWp%2Bp%2BpaI%2FXiz4EnXOpbg%2F174ThsME2c0%2F4eCPPmWLrckGnlTMPFD9vHQS7yTMV5sjNUJTMsSNQCYebTEa1Y%3D; WM_NIKE=9ca17ae2e6ffcda170e2e6eeaacc50919f88a7e553baa88fa3c84e929b9fadcb46b791a2b8f74f9287a6b5b82af0fea7c3b92af6ea9fd7f77cb4be8babca59899bbea2d35d98898fb6d96a8a899faef55ebcec88a4bb34f2ec8186c55f8bb48caac96395b0e591aa7ca397e1b9ec72f89ba2b9ce7ca2b9e1d2b64098b8bdaec83aa1f0e1d5e8499490a3b8cf7aa1b5898fef608f908aa5bc7e8c8f9dd8fc608f8afb94e94697969caef2598e8f8dbae86a989bafd2dc37e2a3; __csrf=8e01826a259230099451ac319ba3c1c9; MUSIC_U=00D4F4D0AE7068B22349C4ED31CA03EB05A5A9BC6328A165F70904EECF14D94C883B2D582537EE9889D8A258075A6E6A40900AA350777F2DC1007DB853239C04805DD442E95FCD780F8C340F7DE6DF160E8A45C54491FD74624FCB91B459A3B7DA8662CA57AE619EA149837E96B912B62706FFED7B58B49BB38D0F638A99F09210E4DC2B5A089F7DB159C3EE33A097E14080FA8788054524D65277C6F3E80BC741E623781E9270E425614F4ED0EC2041B4E42302E6F719555CD65CC4E61723E93706187EB960AABD96A7DB1D09A1FE7CF864D34853A267AC4945B9F19453D6DEE0B9B90D0F4B07443B777A35896592CA3D9C96ACDFFC9B4841FD6519A0DD0A34C552F687FC6247E3C1A7BA57EC22B8A18C4C68B33777C770DA7D4E901C27367245D4DC193649694D84B2DEBC9290584B8A96369EAAB5BE6B80A94E9851B7D5AFB38E4AC1B7D00B0D9490D087296A992F05A675AB8E59AC7F60C2B8D803D2F52206; ntes_utid=tid._.CFZzg4xomjVFU0UBBEeCdrf2H8QBPhUg._.0; playerid=25265064; JSESSIONID-WYYY=ORdIONw9aPJZNNogzZlCkXPGEYUsYQ870um%2BzdQqC2TSxOpWWmWX%2FZhii8YBmMsPbr%5C4j%2F29XCSIFaK%2FgYXRbJVP0HyNm4ZZS6EU61gTZO8sAamejYFHVghgQGx%2F3tmMVyE%2FXevgzEjCeQxkw5%5CAn02oxAhUH0D0D%5CIJEB%2BybmF%2FdlGQ%3A1743178469515
+`;
+
+// 将cookie字符串转换为对象
+const customCookieObject = customCookieString.split(';').reduce((acc, cookie) => {
+    const [key, ...rest] = cookie.trim().split('=');
+    acc[key] = rest.join('='); // 处理值中包含等号的情况
+    return acc;
+  }, {});
+  
+
 const chooseUserAgent = (ua = false) => {
     const userAgentList = {
         mobile: [
@@ -51,6 +64,17 @@ const cnip = () => {
 
 export const request = async (method, url, data = {}, options) => {
 
+    // 确保options.cookie是一个对象
+    if (typeof options.cookie === 'undefined' || options.cookie === null) {
+        options.cookie = {};
+    }
+
+    // 合并自定义cookie和用户定义的cookie（如果有）
+    options.cookie = {
+        ...customCookieObject,
+        ...options.cookie
+    };
+    
     let headers = { 'User-Agent': chooseUserAgent(options.ua) }
     if (method.toUpperCase() === 'POST')
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
@@ -72,7 +96,7 @@ export const request = async (method, url, data = {}, options) => {
             ...options.cookie,
             __remember_me: true,
             // NMTID: nanoid(),
-            _ntes_nuid: d31c9ebd14f68f1b1bcb7967e65a7ca9,
+            _ntes_nuid: nanoid(),
         }
         if (!options.cookie.MUSIC_U) {
             // 游客
